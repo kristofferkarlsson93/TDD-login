@@ -5,7 +5,7 @@ const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 let app = chai.request(server)
 
-const testThatDataHasErrorStatus = require('./utils').testThatDataHasErrorStatus;
+const testThatDataHasStatus = require('./utils').testThatDataHasStatus;
 const testThatDataHasErrorStructure = require('./utils').testThatDataHasErrorStructure;
 const testThatDataHasErrorCode = require('./utils').testThatDataHasErrorCode;
 
@@ -23,7 +23,7 @@ describe('Logging in', () => {
   it('Should not be possible without username', async () => {
     return await app.post('/login')
       .then(res => {
-        testThatDataHasErrorStatus(400, res);
+        testThatDataHasStatus(400, res);
         testThatDataHasErrorStructure(res);
         testThatDataHasErrorCode('MISSING_USERNAME', res);
       });
@@ -33,7 +33,7 @@ describe('Logging in', () => {
     return await app.post('/login')
       .send({username: 'krikar'})
       .then(res => {
-        testThatDataHasErrorStatus(400, res);        
+        testThatDataHasStatus(400, res);        
         testThatDataHasErrorStructure(res);
         testThatDataHasErrorCode('MISSING_PASSWORD', res);
       });
@@ -43,7 +43,7 @@ describe('Logging in', () => {
     return await app.post('/login')
       .send({username: 'unknownUsername', password: 'password123'})
       .then(res => {
-        testThatDataHasErrorStatus(400, res);        
+        testThatDataHasStatus(400, res);        
         testThatDataHasErrorStructure(res);
         testThatDataHasErrorCode('UNKNOWN_USERNAME', res)
       })
@@ -53,9 +53,19 @@ describe('Logging in', () => {
     return await app.post('/login')
       .send({username: 'krikar', password: 'invalidPassword'})
       .then(res => {
-        testThatDataHasErrorStatus(400, res);        
+        testThatDataHasStatus(400, res);        
         testThatDataHasErrorStructure(res);
-        testThatDataHasErrorCode('INVALID_PASSWORD')
+        testThatDataHasErrorCode('INVALID_PASSWORD', res)
       })
+  })
+
+  it('Should return a json web token on successful login', async ()=> {
+    return await app.post('/login')
+      .send({username: 'krikar', password: 'pass123'})
+      .then(res => {
+        testThatDataHasStatus(200, res);
+        res.should.have.property('body')
+        res.body.should.have.property('token');
+      });
   })
 })

@@ -1,5 +1,6 @@
 const userProvider = require('../providers/userProvider');
-const errorCodes = require('../constants/errors').codes;
+const errorCodes = require('../constants/errors').codes
+const authHelper = require('../helpers/authHelper');
 
 module.exports.invoke = (requestBody) => {
   const { username, password } = requestBody;
@@ -10,8 +11,10 @@ module.exports.invoke = (requestBody) => {
   }
   const user = userProvider.getByUsername(username);
   if (!user) {
-    throw errorCodes.UNKNOWN_USER;
+    throw errorCodes.UNKNOWN_USERNAME;
   } else if (user.password !== password) {
-    throw errorCodes.BAD_PASSWORD;
+    throw errorCodes.INVALID_PASSWORD;
   }
+  const authToken = authHelper.getTokenForUser(user.id);
+  return {token: authToken};
 }

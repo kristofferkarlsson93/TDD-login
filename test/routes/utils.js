@@ -1,4 +1,4 @@
-module.exports.testThatDataHasErrorStatus = (wantedStatus, data) => data.should.have.status(wantedStatus);
+module.exports.testThatDataHasStatus = (wantedStatus, data) => data.should.have.status(wantedStatus);
 
 module.exports.testThatDataHasErrorStructure = data => {
   data.should.have.property('body');
