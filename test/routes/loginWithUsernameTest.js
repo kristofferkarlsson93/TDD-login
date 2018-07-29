@@ -3,13 +3,13 @@ const should = chai.should();
 const server = require('../../server');
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
-let app = chai.request(server)
+let app = chai.request(server);
 
 const testThatDataHasStatus = require('./utils').testThatDataHasStatus;
 const testThatDataHasErrorStructure = require('./utils').testThatDataHasErrorStructure;
 const testThatDataHasErrorCode = require('./utils').testThatDataHasErrorCode;
 
-describe('Logging in', () => {
+describe('Logging in with username and password', () => {
 
   beforeEach(done => {
     app = chai.request(server)

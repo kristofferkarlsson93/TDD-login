@@ -5,3 +5,11 @@ module.exports.getByUsername = (username) => {
   if (user) return user;
   return null;
 }
+
+module.exports.getByEmail = email => {
+  const user = userStorage.find(user => user.email === email);
+  if (user) {
+    return user;
+  }
+  return null;
+}
